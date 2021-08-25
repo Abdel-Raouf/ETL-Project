@@ -1,0 +1,27 @@
+version: "3.2"
+services:
+  kafka:
+    image: landoop/fast-data-dev:latest
+    container_name: kafka
+    environment:
+      - FORWARDLOGS=0
+      - RUNTESTS=0
+    ports:
+      - 3030:3030
+  scheduler:
+    build: ./
+    command: ["scheduler /home/raouf/Documents/"]
+    depends_on:
+      - kafka
+  executor:
+    build: ./
+    command: ["executor recipe-name"]
+    depends_on:
+      - kafka
+      - database
+  database:
+    image: 'postgres:13.1-alpine'
+    container_name: database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
